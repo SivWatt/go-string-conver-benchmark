@@ -27,6 +27,6 @@ jobs:
 
       - name: Run Benchmark
         run: |
-          go test -v -bench=. -run=none -benchmem .
+          go test -v -bench=. -run=none -benchmem ./...
 
       # to generate report or something and can be shown on somewhere else
