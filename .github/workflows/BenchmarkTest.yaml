@@ -12,7 +12,7 @@ jobs:
   benchmark:
     strategy:
       matrix:
-        platform: [ubuntu-20.04, windows-latest]
+        platform: [ubuntu-20.04]
         go-version: [1.14.x, 1.16.x]
     runs-on: ${{ matrix.platform }}
     name: Benchmark test for Go
@@ -25,8 +25,13 @@ jobs:
         with: 
           go-version: ${{ matrix.go-version }}
 
+      - name: Download benchstat
+        run: go get golang.org/x/perf/cmd/benchstat
+
       - name: Run Benchmark
         run: |
-          go test -v -bench=. -run=none -benchmem ./...
+          go test -v -bench=. -run=none -benchmem -count=10 ./... | tee old.txt
 
+      - name: Run benchstat with benchmark result
+        run: benchstat old.txt
       # to generate report or something and can be shown on somewhere else
