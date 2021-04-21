@@ -1,0 +1,30 @@
+name: Run Benchmark Test
+
+on:
+  push:
+    tags:
+      - "v*"
+  - pull_request
+
+jobs:
+  benchmark:
+    strategy:
+      matrix:
+        platform: [ubuntu-20.04, windows-latest]
+        go-version: [1.14.x, 1.16.x]
+    runs-on: ${{ matrix.platform }}
+    name: Benchmark test for Go
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Go
+        uses: actions/setup-go@v2
+        with: 
+          go-version: ${{ matrix.go-version }}
+
+      - name: Run Benchmark
+        run: |
+          go test -v -bench=. -run=none -benchmem .
+
+      # to generate report or something and can be shown on somewhere else
